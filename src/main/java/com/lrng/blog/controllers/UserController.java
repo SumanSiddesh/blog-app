@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lrng.blog.exceptions.ResourceNotFoundException;
+import com.lrng.blog.payloads.ApiResponse;
 import com.lrng.blog.payloads.UserDTO;
 import com.lrng.blog.services.UserService;
 
@@ -27,51 +28,53 @@ public class UserController {
 	private UserService userService;
 
 	@PostMapping("/save")
-	public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+	public ResponseEntity<ApiResponse> createUser(@RequestBody UserDTO userDTO) {
 
 		UserDTO createdUserDTO = userService.createUser(userDTO);
-		return new ResponseEntity<UserDTO>(createdUserDTO, HttpStatus.CREATED);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(null, createdUserDTO, true), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/byId/{userId}")
-	public ResponseEntity<Object> getUserById(@PathVariable(name = "userId") int userId) {
+	public ResponseEntity<ApiResponse> getUserById(@PathVariable(name = "userId") int userId) {
 
-		try {
-			
-			UserDTO createdUserDTO = userService.getUserById(userId);
-			return new ResponseEntity<Object>(createdUserDTO, HttpStatus.OK);
-			
-		} catch (ResourceNotFoundException exception) {
-			return new ResponseEntity<Object>(exception.toStringCustom(), HttpStatus.BAD_REQUEST);
-		}
+		// try {
+
+		UserDTO createdUserDTO = userService.getUserById(userId);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(null, createdUserDTO, true), HttpStatus.OK);
+
+		// } catch (ResourceNotFoundException exception) {
+		// return new ResponseEntity<Object>(exception.toStringCustom(),
+		// HttpStatus.BAD_REQUEST);
+		// }
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity<List<UserDTO>> getAllUsers() {
+	public ResponseEntity<ApiResponse> getAllUsers() {
 
 		List<UserDTO> userList = userService.getAllUsers();
-		return new ResponseEntity<List<UserDTO>>(userList, HttpStatus.OK);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(null, userList, true), HttpStatus.OK);
 	}
 
 	@PutMapping("/byId/{userId}")
-	public ResponseEntity<UserDTO> updateUserById(@PathVariable(name = "userId") int userId, @RequestBody UserDTO userDTO) {
+	public ResponseEntity<ApiResponse> updateUserById(@PathVariable(name = "userId") int userId,
+			@RequestBody UserDTO userDTO) {
 
 		UserDTO createdUserDTO = userService.updateUser(userDTO, userId);
-		return new ResponseEntity<UserDTO>(createdUserDTO, HttpStatus.OK);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(null, createdUserDTO, true), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/byId/{userId}")
-	public ResponseEntity deleteUserById(@PathVariable(name = "userId") int userId) {
+	public ResponseEntity<ApiResponse> deleteUserById(@PathVariable(name = "userId") int userId) {
 
 		userService.deleteUser(userId);
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(String.format("Successfully deleted User with Id : %d", userId), null, true), HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/all")
-	public ResponseEntity deleteAllUsers() {
+	public ResponseEntity<ApiResponse> deleteAllUsers() {
 
 		userService.deleteAllUsers();
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity<ApiResponse>(new ApiResponse("Successfully deleted All Users", null, true), HttpStatus.OK);
 	}
-	
+
 }
