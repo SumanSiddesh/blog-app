@@ -1,6 +1,7 @@
 package com.lrng.blog.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
 
 import com.lrng.blog.entities.User;
+import com.lrng.blog.exceptions.ResourceNotFoundException;
 import com.lrng.blog.payloads.UserDTO;
 import com.lrng.blog.repositories.UserRepo;
 
@@ -40,25 +42,43 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDTO updateUser(UserDTO userDTO, Integer userId) {
 
-		return null;
+		User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", " Id ", userId));
+		
+		userDTO.setId(userId);
+		User updatedUser = userRepo.save(convertToEntity(userDTO));
+		return convertToDto(updatedUser);
 	}
 
 	@Override
 	public UserDTO getUserById(Integer userId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", " Id ", userId));
+		return convertToDto(user);
 	}
 
 	@Override
 	public List<UserDTO> getAllUsers() {
-		// TODO Auto-generated method stub
-		return null;
+
+		List<User> userList = userRepo.findAll();
+		return userList.stream().map(user -> convertToDto(user)).collect(Collectors.toList());
 	}
 
 	@Override
 	public void deleteUser(Integer userId) {
-		// TODO Auto-generated method stub
 
+		User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", " Id ", userId));
+		userRepo.deleteById(userId);
+	}
+
+	@Override
+	public void deleteAllUsers() {
+
+		List<User> userList = userRepo.findAll();
+		for (User currUser : userList) {
+			User user = userRepo.findById(currUser.getId())
+					.orElseThrow(() -> new ResourceNotFoundException("User", " Id ", currUser.getId()));
+			userRepo.deleteById(currUser.getId());
+		}
 	}
 
 }
