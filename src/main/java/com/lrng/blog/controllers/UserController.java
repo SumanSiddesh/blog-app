@@ -2,6 +2,8 @@ package com.lrng.blog.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +30,7 @@ public class UserController {
 	private UserService userService;
 
 	@PostMapping("/save")
-	public ResponseEntity<ApiResponse> createUser(@RequestBody UserDTO userDTO) {
+	public ResponseEntity<ApiResponse> createUser(@Valid @RequestBody UserDTO userDTO) {
 
 		UserDTO createdUserDTO = userService.createUser(userDTO);
 		return new ResponseEntity<ApiResponse>(new ApiResponse(null, createdUserDTO, true), HttpStatus.CREATED);
@@ -56,7 +58,7 @@ public class UserController {
 	}
 
 	@PutMapping("/byId/{userId}")
-	public ResponseEntity<ApiResponse> updateUserById(@PathVariable(name = "userId") int userId,
+	public ResponseEntity<ApiResponse> updateUserById(@Valid @PathVariable(name = "userId") int userId,
 			@RequestBody UserDTO userDTO) {
 
 		UserDTO createdUserDTO = userService.updateUser(userDTO, userId);
