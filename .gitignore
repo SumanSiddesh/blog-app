@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+###Ignore custom directories
+/Project_Stuffs
