@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lrng.blog.configs.ApplicationConstants;
 import com.lrng.blog.payloads.ApiResponse;
 import com.lrng.blog.payloads.FindAllApiResponse;
 import com.lrng.blog.payloads.UserDTO;
@@ -53,10 +54,10 @@ public class UserController {
 
 	@GetMapping("/all")
 	public ResponseEntity<ApiResponse> getAllUsers(
-			@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-			@RequestParam(value = "size", defaultValue = "5", required = false) Integer size,
-			@RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-			@RequestParam(value = "direction", defaultValue = "asc", required = false) String direction) {
+			@RequestParam(value = "page", defaultValue = ApplicationConstants.DEFAULT_PAGE_NUMBER, required = false) Integer page,
+			@RequestParam(value = "size", defaultValue = ApplicationConstants.DEFAULT_PAGE_SIZE, required = false) Integer size,
+			@RequestParam(value = "sortBy", defaultValue = ApplicationConstants.USER_SORT_BY_FIELD, required = false) String sortBy,
+			@RequestParam(value = "direction", defaultValue = ApplicationConstants.DEFAULT_SORT_DIRECTION, required = false) String direction) {
 
 		FindAllApiResponse findAllApiResponse = userService.getAllUsers(page, size, sortBy, direction);
 		return new ResponseEntity<ApiResponse>(new ApiResponse(null, findAllApiResponse, true), HttpStatus.OK);

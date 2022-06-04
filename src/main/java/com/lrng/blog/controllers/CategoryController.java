@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lrng.blog.configs.ApplicationConstants;
 import com.lrng.blog.payloads.ApiResponse;
 import com.lrng.blog.payloads.CategoryDTO;
 import com.lrng.blog.payloads.FindAllApiResponse;
@@ -51,10 +52,10 @@ public class CategoryController {
 
 	@GetMapping("/all")
 	public ResponseEntity<Object> getAllCategory(
-			@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-			@RequestParam(value = "size", defaultValue = "10", required = false) Integer size,
-			@RequestParam(value = "sortBy", defaultValue = "categoryId", required = false) String sortBy,
-			@RequestParam(value = "direction", defaultValue = "asc", required = false) String direction) {
+			@RequestParam(value = "page", defaultValue = ApplicationConstants.DEFAULT_PAGE_NUMBER, required = false) Integer page,
+			@RequestParam(value = "size", defaultValue = ApplicationConstants.DEFAULT_PAGE_SIZE, required = false) Integer size,
+			@RequestParam(value = "sortBy", defaultValue = ApplicationConstants.CATEGORY_SORT_BY_FIELD, required = false) String sortBy,
+			@RequestParam(value = "direction", defaultValue = ApplicationConstants.DEFAULT_SORT_DIRECTION, required = false) String direction) {
 
 		FindAllApiResponse findAllApiResponse = categoryService.getAllCategory(page, size, sortBy, direction);
 		return new ResponseEntity<Object>(new ApiResponse(null, findAllApiResponse, true), HttpStatus.OK);
