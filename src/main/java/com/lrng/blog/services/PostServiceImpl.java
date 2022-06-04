@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.lrng.blog.entities.Category;
@@ -89,9 +91,11 @@ public class PostServiceImpl implements IPostService {
 	}
 
 	@Override
-	public FindAllApiResponse getAllPost(Integer page, Integer size) {
+	public FindAllApiResponse getAllPost(Integer page, Integer size, String sortBy, String direction) {
 
-		Pageable pageable = PageRequest.of(page, size);
+		Sort sort = (sortBy.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+
+		Pageable pageable = PageRequest.of(page, size, sort);
 		Page<Post> postList = postRepository.findAll(pageable);
 
 		List<PostDTO> postDTOList = postList.getContent().stream().map((post) -> convertToDTO(post))

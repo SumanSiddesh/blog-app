@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,4 +49,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<Object>(new ApiResponse(null, responseMap, false), HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(value = PropertyReferenceException.class)
+	public ResponseEntity<ApiResponse> handlePropertyReferenceException(PropertyReferenceException exception) {
+
+		String message = exception.getMessage();
+		return new ResponseEntity<ApiResponse>(new ApiResponse(message, null, false), HttpStatus.BAD_REQUEST);
+	}
+	
 }

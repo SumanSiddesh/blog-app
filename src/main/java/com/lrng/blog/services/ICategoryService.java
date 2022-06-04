@@ -13,7 +13,7 @@ public interface ICategoryService {
 
 	CategoryDTO getCategory(Integer categoryId);
 
-	FindAllApiResponse getAllCategory(Integer page, Integer size);
+	FindAllApiResponse getAllCategory(Integer page, Integer size, String sortBy, String direction);
 
 	void deleteCategory(Integer categoryId);
 

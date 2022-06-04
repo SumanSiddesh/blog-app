@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.lrng.blog.entities.Category;
@@ -59,14 +61,17 @@ public class CategoryServiceImpl implements ICategoryService {
 	}
 
 	@Override
-	public FindAllApiResponse getAllCategory(Integer page, Integer size) {
+	public FindAllApiResponse getAllCategory(Integer page, Integer size, String sortBy, String direction) {
 
-		Pageable pageable = PageRequest.of(page, size);
+		Sort sort = (sortBy.equalsIgnoreCase(Direction.ASC.toString()) ? Sort.by(Direction.ASC, sortBy)
+				: Sort.by(Direction.DESC, sortBy));
+
+		Pageable pageable = PageRequest.of(page, size, sort);
 		Page<Category> pageCategory = categoryRepo.findAll(pageable);
 
 		List<CategoryDTO> categoryDTOList = pageCategory.getContent().stream().map(category -> convertToDTO(category))
 				.collect(Collectors.toList());
-		
+
 		FindAllApiResponse findAllApiResponse = new FindAllApiResponse();
 		findAllApiResponse.setContent(categoryDTOList);
 		findAllApiResponse.setPageNumber(pageCategory.getNumber());
@@ -74,7 +79,7 @@ public class CategoryServiceImpl implements ICategoryService {
 		findAllApiResponse.setTotalElements(pageCategory.getTotalElements());
 		findAllApiResponse.setTotalPages(pageCategory.getTotalPages());
 		findAllApiResponse.setIsLastPage(pageCategory.isLast());
-		
+
 		return findAllApiResponse;
 	}
 
@@ -89,7 +94,8 @@ public class CategoryServiceImpl implements ICategoryService {
 	@Override
 	public void deleteAllCategory() {
 
-		List<CategoryDTO> categoryDTOList = getAllCategory();
+		List<CategoryDTO> categoryDTOList = categoryRepo.findAll().stream().map((category) -> convertToDTO(category))
+				.collect(Collectors.toList());
 
 		for (CategoryDTO categoryDTO : categoryDTOList) {
 			deleteCategory(categoryDTO.getCategoryId());

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -53,9 +54,11 @@ public class UserController {
 	@GetMapping("/all")
 	public ResponseEntity<ApiResponse> getAllUsers(
 			@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-			@RequestParam(value = "size", defaultValue = "5", required = false) Integer size) {
+			@RequestParam(value = "size", defaultValue = "5", required = false) Integer size,
+			@RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+			@RequestParam(value = "direction", defaultValue = "asc", required = false) String direction) {
 
-		FindAllApiResponse findAllApiResponse = userService.getAllUsers(page, size);
+		FindAllApiResponse findAllApiResponse = userService.getAllUsers(page, size, sortBy, direction);
 		return new ResponseEntity<ApiResponse>(new ApiResponse(null, findAllApiResponse, true), HttpStatus.OK);
 	}
 

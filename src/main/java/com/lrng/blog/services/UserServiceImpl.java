@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
 
@@ -61,11 +63,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public FindAllApiResponse getAllUsers(Integer page, Integer size) {
+	public FindAllApiResponse getAllUsers(Integer page, Integer size, String sortBy, String direction) {
 
-		Pageable pageable = PageRequest.of(page, size);
+		Sort sort = (direction.equalsIgnoreCase(Direction.ASC.toString()) ? Sort.by(Direction.ASC, sortBy)
+				: Sort.by(Direction.DESC, sortBy));
+
+		Pageable pageable = PageRequest.of(page, size, sort);
+
 		Page<User> pageUserList = userRepo.findAll(pageable);
-		List<UserDTO> userDTOList = pageUserList.getContent().stream().map(user -> convertToDto(user)).collect(Collectors.toList());
+		List<UserDTO> userDTOList = pageUserList.getContent().stream().map(user -> convertToDto(user))
+				.collect(Collectors.toList());
 
 		FindAllApiResponse findAllApiResponse = new FindAllApiResponse();
 		findAllApiResponse.setContent(userDTOList);
@@ -74,7 +81,7 @@ public class UserServiceImpl implements UserService {
 		findAllApiResponse.setTotalElements(pageUserList.getTotalElements());
 		findAllApiResponse.setTotalPages(pageUserList.getTotalPages());
 		findAllApiResponse.setIsLastPage(pageUserList.isLast());
-		
+
 		return findAllApiResponse;
 	}
 

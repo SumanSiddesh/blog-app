@@ -70,9 +70,11 @@ public class PostController {
 	@GetMapping("/all")
 	public ResponseEntity<Object> getAllPost(
 			@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-			@RequestParam(value = "size", defaultValue = "10", required = false) Integer size) {
+			@RequestParam(value = "size", defaultValue = "10", required = false) Integer size,
+			@RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy,
+			@RequestParam(value = "direction", defaultValue = "asc", required = false) String direction) {
 
-		FindAllApiResponse findAllApiResponse = postService.getAllPost(page, size);
+		FindAllApiResponse findAllApiResponse = postService.getAllPost(page, size, sortBy, direction);
 		return new ResponseEntity<Object>(new ApiResponse(null, findAllApiResponse, true), HttpStatus.OK);
 	}
 

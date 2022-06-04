@@ -13,7 +13,7 @@ public interface IPostService {
 
 	void deletePost(Integer postId);
 
-	FindAllApiResponse getAllPost(Integer page, Integer size);
+	FindAllApiResponse getAllPost(Integer page, Integer size, String sortBy, String direction);
 
 	PostDTO getPostById(Integer postId);
 

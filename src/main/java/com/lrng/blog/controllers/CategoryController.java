@@ -1,7 +1,5 @@
 package com.lrng.blog.controllers;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +52,11 @@ public class CategoryController {
 	@GetMapping("/all")
 	public ResponseEntity<Object> getAllCategory(
 			@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-			@RequestParam(value = "size", defaultValue = "10", required = false) Integer size) {
+			@RequestParam(value = "size", defaultValue = "10", required = false) Integer size,
+			@RequestParam(value = "sortBy", defaultValue = "categoryId", required = false) String sortBy,
+			@RequestParam(value = "direction", defaultValue = "asc", required = false) String direction) {
 
-		FindAllApiResponse findAllApiResponse = categoryService.getAllCategory(page, size);
+		FindAllApiResponse findAllApiResponse = categoryService.getAllCategory(page, size, sortBy, direction);
 		return new ResponseEntity<Object>(new ApiResponse(null, findAllApiResponse, true), HttpStatus.OK);
 	}
 
