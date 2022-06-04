@@ -86,7 +86,9 @@ public class PostServiceImpl implements IPostService {
 
 	@Override
 	public List<PostDTO> getAllPost() {
-		return postRepository.findAll().stream().map((post) -> convertToDTO(post)).collect(Collectors.toList());
+
+		List<Post> postList = postRepository.findAll();
+		return postList.stream().map((post) -> convertToDTO(post)).collect(Collectors.toList());
 	}
 
 	@Override

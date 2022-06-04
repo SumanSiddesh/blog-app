@@ -76,7 +76,7 @@ public class PostController {
 	public ResponseEntity<Object> deletePostById(@PathVariable(name = "postId") Integer postId) {
 
 		postService.deletePost(postId);
-		return new ResponseEntity<Object>(new ApiResponse(null, null, true), HttpStatus.OK);
+		return new ResponseEntity<Object>(new ApiResponse(String.format("Successfully deleted Post with Id : %d", postId), null, true), HttpStatus.OK);
 	}
 
 }
