@@ -2,6 +2,7 @@ package com.lrng.blog.services;
 
 import java.util.List;
 
+import com.lrng.blog.payloads.FindAllApiResponse;
 import com.lrng.blog.payloads.UserDTO;
 
 public interface UserService {
@@ -12,7 +13,7 @@ public interface UserService {
 	
 	UserDTO getUserById(Integer userId);
 	
-	List<UserDTO> getAllUsers();
+	FindAllApiResponse getAllUsers(Integer page, Integer size);
 	
 	void deleteUser(Integer userId);
 	

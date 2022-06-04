@@ -2,6 +2,7 @@ package com.lrng.blog.services;
 
 import java.util.List;
 
+import com.lrng.blog.payloads.FindAllApiResponse;
 import com.lrng.blog.payloads.PostDTO;
 
 public interface IPostService {
@@ -12,7 +13,7 @@ public interface IPostService {
 
 	void deletePost(Integer postId);
 
-	List<PostDTO> getAllPost(Integer page, Integer size);
+	FindAllApiResponse getAllPost(Integer page, Integer size);
 
 	PostDTO getPostById(Integer postId);
 

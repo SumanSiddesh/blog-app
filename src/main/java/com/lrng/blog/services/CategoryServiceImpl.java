@@ -5,11 +5,15 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.lrng.blog.entities.Category;
 import com.lrng.blog.exceptions.ResourceNotFoundException;
 import com.lrng.blog.payloads.CategoryDTO;
+import com.lrng.blog.payloads.FindAllApiResponse;
 import com.lrng.blog.repositories.CategoryRepository;
 
 @Service
@@ -55,10 +59,23 @@ public class CategoryServiceImpl implements ICategoryService {
 	}
 
 	@Override
-	public List<CategoryDTO> getAllCategory() {
+	public FindAllApiResponse getAllCategory(Integer page, Integer size) {
 
-		List<Category> categoryList = categoryRepo.findAll();
-		return categoryList.stream().map(category -> convertToDTO(category)).collect(Collectors.toList());
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Category> pageCategory = categoryRepo.findAll(pageable);
+
+		List<CategoryDTO> categoryDTOList = pageCategory.getContent().stream().map(category -> convertToDTO(category))
+				.collect(Collectors.toList());
+		
+		FindAllApiResponse findAllApiResponse = new FindAllApiResponse();
+		findAllApiResponse.setContent(categoryDTOList);
+		findAllApiResponse.setPageNumber(pageCategory.getNumber());
+		findAllApiResponse.setPageSize(pageCategory.getSize());
+		findAllApiResponse.setTotalElements(pageCategory.getTotalElements());
+		findAllApiResponse.setTotalPages(pageCategory.getTotalPages());
+		findAllApiResponse.setIsLastPage(pageCategory.isLast());
+		
+		return findAllApiResponse;
 	}
 
 	@Override

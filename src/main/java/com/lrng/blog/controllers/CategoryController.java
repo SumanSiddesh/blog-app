@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lrng.blog.payloads.ApiResponse;
 import com.lrng.blog.payloads.CategoryDTO;
+import com.lrng.blog.payloads.FindAllApiResponse;
 import com.lrng.blog.services.ICategoryService;
 
 @RestController
@@ -50,24 +52,29 @@ public class CategoryController {
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity<Object> updateCategory() {
+	public ResponseEntity<Object> getAllCategory(
+			@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
+			@RequestParam(value = "size", defaultValue = "10", required = false) Integer size) {
 
-		List<CategoryDTO> categoryList = categoryService.getAllCategory();
-		return new ResponseEntity<Object>(new ApiResponse(null, categoryList, true), HttpStatus.OK);
+		FindAllApiResponse findAllApiResponse = categoryService.getAllCategory(page, size);
+		return new ResponseEntity<Object>(new ApiResponse(null, findAllApiResponse, true), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/byCategoryId/{categoryId}")
 	public ResponseEntity<Object> deleteCategory(@PathVariable Integer categoryId) {
 
 		categoryService.deleteCategory(categoryId);
-		return new ResponseEntity<Object>(new ApiResponse(String.format("Successfully deleted Category with Id : %d", categoryId), null, true), HttpStatus.OK);
+		return new ResponseEntity<Object>(
+				new ApiResponse(String.format("Successfully deleted Category with Id : %d", categoryId), null, true),
+				HttpStatus.OK);
 	}
 
 	@DeleteMapping("/all")
 	public ResponseEntity<Object> deleteAllCategory() {
 
 		categoryService.deleteAllCategory();
-		return new ResponseEntity<Object>(new ApiResponse("Successfully deleted All Categories", null, true), HttpStatus.OK);
+		return new ResponseEntity<Object>(new ApiResponse("Successfully deleted All Categories", null, true),
+				HttpStatus.OK);
 	}
 
 }

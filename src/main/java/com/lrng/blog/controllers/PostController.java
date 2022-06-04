@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lrng.blog.payloads.ApiResponse;
+import com.lrng.blog.payloads.FindAllApiResponse;
 import com.lrng.blog.payloads.PostDTO;
 import com.lrng.blog.services.IPostService;
 
@@ -68,11 +69,11 @@ public class PostController {
 
 	@GetMapping("/all")
 	public ResponseEntity<Object> getAllPost(
-			@RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
-			@RequestParam(value = "size", defaultValue = "5", required = false) Integer size) {
+			@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
+			@RequestParam(value = "size", defaultValue = "10", required = false) Integer size) {
 
-		List<PostDTO> postDTOList = postService.getAllPost(page, size);
-		return new ResponseEntity<Object>(new ApiResponse(null, postDTOList, true), HttpStatus.OK);
+		FindAllApiResponse findAllApiResponse = postService.getAllPost(page, size);
+		return new ResponseEntity<Object>(new ApiResponse(null, findAllApiResponse, true), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/postId/{postId}")

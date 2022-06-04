@@ -15,6 +15,7 @@ import com.lrng.blog.entities.Category;
 import com.lrng.blog.entities.Post;
 import com.lrng.blog.entities.User;
 import com.lrng.blog.exceptions.ResourceNotFoundException;
+import com.lrng.blog.payloads.FindAllApiResponse;
 import com.lrng.blog.payloads.PostDTO;
 import com.lrng.blog.repositories.CategoryRepository;
 import com.lrng.blog.repositories.PostRepository;
@@ -88,12 +89,23 @@ public class PostServiceImpl implements IPostService {
 	}
 
 	@Override
-	public List<PostDTO> getAllPost(Integer page, Integer size) {
+	public FindAllApiResponse getAllPost(Integer page, Integer size) {
 
 		Pageable pageable = PageRequest.of(page, size);
 		Page<Post> postList = postRepository.findAll(pageable);
 
-		return postList.getContent().stream().map((post) -> convertToDTO(post)).collect(Collectors.toList());
+		List<PostDTO> postDTOList = postList.getContent().stream().map((post) -> convertToDTO(post))
+				.collect(Collectors.toList());
+
+		FindAllApiResponse findAllApiResponse = new FindAllApiResponse();
+		findAllApiResponse.setContent(postDTOList);
+		findAllApiResponse.setPageNumber(postList.getNumber());
+		findAllApiResponse.setPageSize(postList.getSize());
+		findAllApiResponse.setTotalElements(postList.getTotalElements());
+		findAllApiResponse.setTotalPages(postList.getTotalPages());
+		findAllApiResponse.setIsLastPage(postList.isLast());
+
+		return findAllApiResponse;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.lrng.blog.services;
 import java.util.List;
 
 import com.lrng.blog.payloads.CategoryDTO;
+import com.lrng.blog.payloads.FindAllApiResponse;
 
 public interface ICategoryService {
 
@@ -12,7 +13,7 @@ public interface ICategoryService {
 
 	CategoryDTO getCategory(Integer categoryId);
 
-	List<CategoryDTO> getAllCategory();
+	FindAllApiResponse getAllCategory(Integer page, Integer size);
 
 	void deleteCategory(Integer categoryId);
 

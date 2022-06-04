@@ -5,11 +5,15 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
 
 import com.lrng.blog.entities.User;
 import com.lrng.blog.exceptions.ResourceNotFoundException;
+import com.lrng.blog.payloads.FindAllApiResponse;
 import com.lrng.blog.payloads.UserDTO;
 import com.lrng.blog.repositories.UserRepo;
 
@@ -43,7 +47,7 @@ public class UserServiceImpl implements UserService {
 	public UserDTO updateUser(UserDTO userDTO, Integer userId) {
 
 		User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", " Id ", userId));
-		
+
 		userDTO.setId(userId);
 		User updatedUser = userRepo.save(convertToEntity(userDTO));
 		return convertToDto(updatedUser);
@@ -57,10 +61,21 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserDTO> getAllUsers() {
+	public FindAllApiResponse getAllUsers(Integer page, Integer size) {
 
-		List<User> userList = userRepo.findAll();
-		return userList.stream().map(user -> convertToDto(user)).collect(Collectors.toList());
+		Pageable pageable = PageRequest.of(page, size);
+		Page<User> pageUserList = userRepo.findAll(pageable);
+		List<UserDTO> userDTOList = pageUserList.getContent().stream().map(user -> convertToDto(user)).collect(Collectors.toList());
+
+		FindAllApiResponse findAllApiResponse = new FindAllApiResponse();
+		findAllApiResponse.setContent(userDTOList);
+		findAllApiResponse.setPageNumber(pageUserList.getNumber());
+		findAllApiResponse.setPageSize(pageUserList.getSize());
+		findAllApiResponse.setTotalElements(pageUserList.getTotalElements());
+		findAllApiResponse.setTotalPages(pageUserList.getTotalPages());
+		findAllApiResponse.setIsLastPage(pageUserList.isLast());
+		
+		return findAllApiResponse;
 	}
 
 	@Override

@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lrng.blog.payloads.ApiResponse;
+import com.lrng.blog.payloads.FindAllApiResponse;
 import com.lrng.blog.payloads.UserDTO;
 import com.lrng.blog.services.UserService;
 
@@ -49,10 +51,12 @@ public class UserController {
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity<ApiResponse> getAllUsers() {
+	public ResponseEntity<ApiResponse> getAllUsers(
+			@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
+			@RequestParam(value = "size", defaultValue = "5", required = false) Integer size) {
 
-		List<UserDTO> userList = userService.getAllUsers();
-		return new ResponseEntity<ApiResponse>(new ApiResponse(null, userList, true), HttpStatus.OK);
+		FindAllApiResponse findAllApiResponse = userService.getAllUsers(page, size);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(null, findAllApiResponse, true), HttpStatus.OK);
 	}
 
 	@PutMapping("/byId/{userId}")
@@ -67,14 +71,17 @@ public class UserController {
 	public ResponseEntity<ApiResponse> deleteUserById(@PathVariable(name = "userId") int userId) {
 
 		userService.deleteUser(userId);
-		return new ResponseEntity<ApiResponse>(new ApiResponse(String.format("Successfully deleted User with Id : %d", userId), null, true), HttpStatus.OK);
+		return new ResponseEntity<ApiResponse>(
+				new ApiResponse(String.format("Successfully deleted User with Id : %d", userId), null, true),
+				HttpStatus.OK);
 	}
 
 	@DeleteMapping("/all")
 	public ResponseEntity<ApiResponse> deleteAllUsers() {
 
 		userService.deleteAllUsers();
-		return new ResponseEntity<ApiResponse>(new ApiResponse("Successfully deleted All Users", null, true), HttpStatus.OK);
+		return new ResponseEntity<ApiResponse>(new ApiResponse("Successfully deleted All Users", null, true),
+				HttpStatus.OK);
 	}
 
 }
