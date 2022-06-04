@@ -2,6 +2,7 @@ package com.lrng.blog.services;
 
 import java.util.List;
 
+import com.lrng.blog.entities.Post;
 import com.lrng.blog.payloads.FindAllApiResponse;
 import com.lrng.blog.payloads.PostDTO;
 
@@ -20,5 +21,7 @@ public interface IPostService {
 	List<PostDTO> getPostByCategory(Integer categoryId);
 
 	List<PostDTO> getPostByUser(Integer userId);
+	
+	List<PostDTO> searchPost(String keyword);
 
 }

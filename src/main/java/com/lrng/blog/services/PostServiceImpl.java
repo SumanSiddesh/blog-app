@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.lrng.blog.entities.Category;
@@ -137,6 +136,14 @@ public class PostServiceImpl implements IPostService {
 				.orElseThrow(() -> new ResourceNotFoundException("User", "UserId", userId));
 
 		List<Post> postList = postRepository.findByUser(user);
+		return postList.stream().map((post) -> convertToDTO(post)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PostDTO> searchPost(String keyword) {
+
+		//List<Post> postList = postRepository.findByTitleContaining(keyword);
+		List<Post> postList = postRepository.searchByTitle(keyword);
 		return postList.stream().map((post) -> convertToDTO(post)).collect(Collectors.toList());
 	}
 
