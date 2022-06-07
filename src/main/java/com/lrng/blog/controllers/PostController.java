@@ -1,10 +1,12 @@
 package com.lrng.blog.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,11 +18,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lrng.blog.configs.ApplicationConstants;
 import com.lrng.blog.payloads.ApiResponse;
 import com.lrng.blog.payloads.FindAllApiResponse;
 import com.lrng.blog.payloads.PostDTO;
+import com.lrng.blog.services.FileServiceImpl;
+import com.lrng.blog.services.IFileService;
 import com.lrng.blog.services.IPostService;
 
 @RestController
@@ -29,6 +34,12 @@ public class PostController {
 
 	@Autowired
 	private IPostService postService;
+
+	@Autowired
+	private IFileService fileService;
+	
+	@Value("${project.image}")
+	private String path;
 
 	@PostMapping("/user/{userId}/category/{categoryId}/save")
 	public ResponseEntity<Object> createPost(@Valid @RequestBody PostDTO postDTO,
@@ -87,12 +98,24 @@ public class PostController {
 				new ApiResponse(String.format("Successfully deleted Post with Id : %d", postId), null, true),
 				HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/posts/search/{keyword}")
 	public ResponseEntity<Object> searchPostByTitel(@PathVariable(name = "keyword") String keyword) {
 
 		List<PostDTO> postDTOList = postService.searchPost(keyword);
 		return new ResponseEntity<Object>(new ApiResponse(null, postDTOList, true), HttpStatus.OK);
+	}
+
+	@PostMapping("/{postId}/image/upload")
+	public ResponseEntity<Object> uploadPostImage(@PathVariable(name = "postId") Integer postId,
+			@RequestParam(name = "image") MultipartFile image) throws IOException {
+
+		PostDTO postDTO =  postService.getPostById(postId);
+		String fileName = fileService.uploadImage(path, image);
+		postDTO.setImageName(fileName);
+		PostDTO updatedPostDTO = postService.updatePost(postId, postDTO.getUser().getId(), postDTO.getCategory().getCategoryId(), postDTO);
+		
+		return new ResponseEntity<Object>(new ApiResponse(null, updatedPostDTO, true), HttpStatus.OK);
 	}
 
 }
