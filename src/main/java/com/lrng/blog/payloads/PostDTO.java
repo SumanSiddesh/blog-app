@@ -1,6 +1,8 @@
 package com.lrng.blog.payloads;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -28,11 +30,12 @@ public class PostDTO {
 	private String imageName;
 
 	private Date createdDate;
-	
+
 	private Date updatedDate;
 
 	private CategoryDTO category;
 
 	private UserDTO user;
 
+	private List<CommentDTO> comments = new ArrayList<CommentDTO>();
 }
